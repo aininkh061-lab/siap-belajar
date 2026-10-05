@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Ksatria Nusantara - Petualangan Aljabar Kelas 7</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.15);
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.4);
+        }
+        .btn-grad {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-grad:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+        .map-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .map-card.unlocked:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+
+    <!-- Container Utama -->
+    <div id="app" class="w-full max-w-4xl glass-panel rounded-3xl p-4 sm:p-8 shadow-2xl relative overflow-hidden border border-amber-500/30">
+
+        <!-- Header Bar -->
+        <header id="gameHeader" class="hidden flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-700/60">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-user-shield text-xl"></i>
+                </div>
+                <div>
+                    <h3 id="playerDisplay" class="font-bold text-amber-300 leading-tight text-sm sm:text-base">Ksatria: -</h3>
+                    <p id="classDisplay" class="text-xs text-slate-400">Kelas VII A</p>
+                </div>
+            </div>
+
+            <!-- Status Ksatria Terkumpul -->
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-400 hidden sm:inline">Ksatria Direkrut:</span>
+                <div id="badgeK1" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 text-xs" title="Ksatria Banaspati"><i class="fa-solid fa-fire"></i></div>
+                <div id="badgeK2" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 text-xs" title="Ksatria Gua Batu"><i class="fa-solid fa-mountain"></i></div>
+                <div id="badgeK3" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-600 text-xs" title="Ksatria Merapi"><i class="fa-solid fa-crown"></i></div>
+            </div>
+        </header>
+
+        <!-- SCREEN 1: START SCREEN -->
+        <div id="screenStart" class="text-center py-6 sm:py-10">
+            <div class="inline-flex p-4 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 mb-4 animate-bounce">
+                <i class="fa-solid fa-map-location-dot text-4xl sm:text-5xl"></i>
+            </div>
+            <h1 class="font-cinzel text-2xl sm:text-4xl font-black text-amber-300 tracking-wide mb-2">PETA KSATRIA NUSANTARA</h1>
+            <p class="text-slate-300 max-w-lg mx-auto text-xs sm:text-sm mb-6 leading-relaxed">
+                Jelajahi peta interaktif Nusantara! Selesaikan <span class="text-amber-300 font-bold">3 Soal Pre-Test</span>, jalankan misi fisik & kelompok untuk mendapatkan kunci di Pos 1, Pos 2, dan Pos 3, serta rebut <span class="text-amber-300 font-bold">Kristal Pusaka Kerajaan</span>!
+            </p>
+
+            <form id="startForm" onsubmit="startGame(event)" class="max-w-md mx-auto space-y-4">
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">Nama Kelompok / Ksatria</label>
+                    <input type="text" id="inputName" required placeholder="Masukkan Nama Kelompok / Nama Ksatria" class="w-full px-4 py-3 rounded-xl bg-slate-800/90 border border-slate-600 text-slate-100 focus:outline-none focus:border-amber-400 text-sm">
+                </div>
+                <div class="text-left">
+                    <label class="block text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">Kelas</label>
+                    <input type="text" id="inputClass" required value="VII A" placeholder="Contoh: VII A" class="w-full px-4 py-3 rounded-xl bg-slate-800/90 border border-slate-600 text-slate-100 focus:outline-none focus:border-amber-400 text-sm">
+                </div>
+                <button type="submit" class="w-full py-4 rounded-2xl btn-grad font-black text-slate-950 uppercase tracking-widest text-sm sm:text-base flex items-center justify-center gap-2 mt-4">
+                    <i class="fa-solid fa-compass"></i> Buka Peta Petualangan
+                </button>
+            </form>
+        </div>
+
+        <!-- SCREEN 2: INTERACTIVE MAP SELECTION -->
+        <div id="screenMap" class="hidden">
+            <div class="text-center mb-6">
+                <h2 class="font-cinzel text-2xl font-bold text-amber-300">PETA WILAYAH NUSANTARA</h2>
+                <p class="text-xs text-slate-400 mt-1">Klik Pos yang telah terbuka untuk memulai tantangan aljabar!</p>
+            </div>
+
+            <!-- Grid Peta Visual -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <!-- Node 0: Pre-Test -->
+                <div id="node0" onclick="selectPos(0)" class="map-card unlocked p-5 rounded-2xl bg-slate-900 border-2 border-amber-400 cursor-pointer glow-gold relative overflow-hidden">
+                    <div class="flex items-start justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400 text-lg">
+                            <i class="fa-solid fa-vihara"></i>
+                        </div>
+                        <span id="badgeNode0" class="px-2 py-1 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">Terbuka</span>
+                    </div>
+                    <h3 class="font-cinzel font-bold text-slate-100 mt-3 text-base">Pendopo Agung</h3>
+                    <p class="text-xs text-slate-400 mt-1">Stage 0: Pre-Test (3 Soal)</p>
+                </div>
+
+                <!-- Node 1: Pos 1 -->
+                <div id="node1" onclick="selectPos(1)" class="map-card p-5 rounded-2xl bg-slate-900/60 border-2 border-slate-800 opacity-60 cursor-not-allowed relative overflow-hidden">
+                    <div class="flex items-start justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 text-lg">
+                            <i class="fa-solid fa-tree"></i>
+                        </div>
+                        <span id="badgeNode1" class="px-2 py-1 rounded-md bg-slate-800 text-slate-500 text-[10px] font-bold uppercase"><i class="fa-solid fa-lock"></i> Terkunci</span>
+                    </div>
+                    <h3 class="font-cinzel font-bold text-slate-300 mt-3 text-base">Hutan Bambu Keramat</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pos 1: Misi Kelompok & Kunci 1</p>
+                </div>
+
+                <!-- Node 2: Pos 2 -->
+                <div id="node2" onclick="selectPos(2)" class="map-card p-5 rounded-2xl bg-slate-900/60 border-2 border-slate-800 opacity-60 cursor-not-allowed relative overflow-hidden">
+                    <div class="flex items-start justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 text-lg">
+                            <i class="fa-solid fa-mountain-city"></i>
+                        </div>
+                        <span id="badgeNode2" class="px-2 py-1 rounded-md bg-slate-800 text-slate-500 text-[10px] font-bold uppercase"><i class="fa-solid fa-lock"></i> Terkunci</span>
+                    </div>
+                    <h3 class="font-cinzel font-bold text-slate-300 mt-3 text-base">Gua Batu Distributif</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pos 2: Misi Kelompok & Kunci 2</p>
+                </div>
+
+                <!-- Node 3: Pos 3 -->
+                <div id="node3" onclick="selectPos(3)" class="map-card p-5 rounded-2xl bg-slate-900/60 border-2 border-slate-800 opacity-60 cursor-not-allowed relative overflow-hidden">
+                    <div class="flex items-start justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 text-lg">
+                            <i class="fa-solid fa-volcano"></i>
+                        </div>
+                        <span id="badgeNode3" class="px-2 py-1 rounded-md bg-slate-800 text-slate-500 text-[10px] font-bold uppercase"><i class="fa-solid fa-lock"></i> Terkunci</span>
+                    </div>
+                    <h3 class="font-cinzel font-bold text-slate-300 mt-3 text-base">Puncak Merapi</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pos 3: Misi Kelompok & Kunci 3</p>
+                </div>
+
+                <!-- Node 4: Post-Test -->
+                <div id="node4" onclick="selectPos(4)" class="map-card p-5 rounded-2xl bg-slate-900/60 border-2 border-slate-800 opacity-60 cursor-not-allowed relative overflow-hidden sm:col-span-2 lg:col-span-2">
+                    <div class="flex items-start justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 text-lg">
+                            <i class="fa-solid fa-gem"></i>
+                        </div>
+                        <span id="badgeNode4" class="px-2 py-1 rounded-md bg-slate-800 text-slate-500 text-[10px] font-bold uppercase"><i class="fa-solid fa-lock"></i> Terkunci</span>
+                    </div>
+                    <h3 class="font-cinzel font-bold text-slate-300 mt-3 text-base">Candi Mahkota Pusaka</h3>
+                    <p class="text-xs text-slate-500 mt-1">Stage 4: Post-Test Evaluasi (5 Soal)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: PANEL SOAL & TANTANGAN -->
+        <div id="screenGame" class="hidden">
+            <button onclick="backToMap()" class="mb-4 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-2 border border-slate-700">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Peta
+            </button>
+
+            <div class="p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-amber-500/30">
+                <div id="locationHeader" class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-800">
+                    <div id="locationIcon" class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400 text-xl">
+                        <i class="fa-solid fa-vihara"></i>
+                    </div>
+                    <div>
+                        <h2 id="storyLocation" class="font-cinzel font-bold text-amber-300 text-base sm:text-lg">Pendopo Agung Istana</h2>
+                        <p id="storyMission" class="text-xs text-slate-400">Pre-Test: Soal 1 dari 3</p>
+                    </div>
+                </div>
+
+                <!-- Box Instruksi Khusus Kelompok & Verifikasi Kunci (Pos 1, Pos 2, Pos 3) -->
+                <div id="groupInstructionBox" class="hidden mb-5 p-4 rounded-xl bg-amber-500/10 border-2 border-amber-400 text-amber-300 text-xs leading-relaxed">
+                    <div id="groupInstTitle" class="font-bold uppercase tracking-wider mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-base"></i> MISI BERKELOMPOK & VERIFIKASI KUNCI POS
+                    </div>
+                    <ol class="list-decimal list-inside space-y-1 text-slate-200">
+                        <li>Cari jawaban dari soal ini bersama seluruh anggota kelompokmu!</li>
+                        <li>Tapi sebelumnya, **pergilah ke <span id="targetPosNameText" class="text-amber-300 font-bold">Pos</span> fisik di kelas** untuk mengambil kuncinya.</li>
+                        <li>Setelah mendapat kunci, **masukkan kode verifikasi kunci** pada kolom di bawah.</li>
+                        <li>Setelah terverifikasi, selesaikan soal aljabar di bawah ini bersama kelompokmu!</li>
+                    </ol>
+
+                    <!-- Form Verifikasi Kunci -->
+                    <div id="keyVerificationForm" class="mt-4 pt-3 border-t border-amber-500/30 flex flex-wrap gap-2 items-center">
+                        <input type="text" id="inputKeyPos" placeholder="Masukkan Kode Kunci Pos..." class="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-amber-400 text-slate-100 text-xs focus:outline-none">
+                        <button onclick="verifyKeyPos()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase">
+                            <i class="fa-solid fa-key"></i> Verifikasi Kunci
+                        </button>
+                    </div>
+                    <div id="keyStatusMessage" class="hidden mt-2 font-bold text-xs"></div>
+                </div>
+
+                <div id="storyText" class="p-4 rounded-xl bg-slate-800/60 text-slate-200 text-xs sm:text-sm leading-relaxed mb-5 border-l-4 border-amber-500 italic">
+                    "Mahapatih Gajah Mada menguji kesaktian dasar aljabarmu..."
+                </div>
+
+                <div id="questionArea" class="mb-5">
+                    <span class="text-[11px] uppercase font-bold text-amber-400 tracking-wider">Tantangan Aljabar:</span>
+                    <h3 id="questionText" class="font-bold text-slate-100 text-sm sm:text-base mt-1">
+                        Loading soal...
+                    </h3>
+                </div>
+
+                <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Option Buttons via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: RESULTS -->
+        <div id="screenResult" class="hidden text-center py-6">
+            <div class="inline-flex p-4 rounded-full bg-amber-500/20 border border-amber-400 text-amber-400 mb-3">
+                <i class="fa-solid fa-trophy text-4xl sm:text-5xl"></i>
+            </div>
+            <h2 id="resultTitle" class="font-cinzel text-2xl sm:text-3xl font-black text-amber-300">MISI SELESAI!</h2>
+            <p id="resultSubtitle" class="text-xs sm:text-sm text-slate-300 mt-1 mb-6">Selamat! Kamu berhasil merekrut 3 Ksatria dan menyelamatkan Pusaka Nusantara.</p>
+
+            <div class="max-w-md mx-auto p-5 rounded-2xl bg-slate-900/90 border border-amber-500/40 text-left space-y-3 mb-6">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <span class="text-xs text-slate-400">Nama / Kelas:</span>
+                    <span id="resName" class="font-bold text-amber-300 text-sm">-</span>
+                </div>
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <span class="text-xs text-slate-400">Skor Akhir:</span>
+                    <span id="resScore" class="font-mono text-2xl font-black text-amber-400">100</span>
+                </div>
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <span class="text-xs text-slate-400">Ksatria Direkrut:</span>
+                    <span id="resKnights" class="font-bold text-emerald-400 text-sm">3 / 3 Ksatria</span>
+                </div>
+            </div>
+
+            <div class="max-w-md mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button onclick="copyWA()" class="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Salin Rekap WA
+                </button>
+                <button onclick="window.print()" class="py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-xs text-white flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print text-base"></i> Cetak PDF / Laporan
+                </button>
+                <button onclick="location.reload()" class="sm:col-span-2 py-3 px-4 rounded-xl btn-grad font-black text-slate-950 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Main Lagi
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+        const questionsList = [
+            // Stage 0: Pre-Test (3 Soal)
+            { stage: 0, subIndex: 1, maxSub: 3, location: "Pendopo Agung Istana", mission: "Pre-Test Soal 1/3", icon: "fa-vihara", story: "Mahapatih Gajah Mada menguji ingatan dasar aljabarmu sebelum melangkah ke lokasi berbahaya.", q: "Pada bentuk aljabar 5x² - 7x + 12, sebutkan koefisien dari x!", options: ["5", "-7", "12", "x²"], correct: 1 },
+            { stage: 0, subIndex: 2, maxSub: 3, location: "Pendopo Agung Istana", mission: "Pre-Test Soal 2/3", icon: "fa-vihara", story: "Pilihlah pasangan suku sejenis yang tepat di bawah ini!", q: "Pasangan suku di bawah ini yang merupakan suku sejenis adalah...", options: ["3x dan 3y", "5a² dan 2a", "-4ab dan 7ab", "6p²q dan 6pq²"], correct: 2 },
+            { stage: 0, subIndex: 3, maxSub: 3, location: "Pendopo Agung Istana", mission: "Pre-Test Soal 3/3", icon: "fa-vihara", story: "Selesaikan tantangan terakhir Pre-Test ini untuk membuka Peta Nusantara!", q: "Tentukan konstanta dari bentuk aljabar 2x² + 3x - 9!", options: ["2", "3", "x", "-9"], correct: 3 },
+
+            // Pos 1 (Misi Kelompok & Kunci 1)
+            { stage: 1, subIndex: 1, maxSub: 1, location: "Hutan Bambu Keramat", mission: "Pos 1: Ksatria Banaspati (Misi Kelompok)", icon: "fa-tree", story: "Banaspati Api mengepung lokasi ini! Pergilah ke Pos 1 fisik di kelas untuk mendapatkan Kunci Banaspati, verifikasi kodenya, dan padamkan api bersama kelompokmu!", q: "Sederhanakan bentuk aljabar berikut: (8x - 5y + 3) + (3x + 9y - 10)", options: ["11x + 4y - 7", "11x - 14y + 13", "5x + 4y - 7", "11x + 4y + 7"], correct: 0 },
+
+            // Pos 2 (Misi Kelompok & Kunci 2)
+            { stage: 2, subIndex: 1, maxSub: 1, location: "Gua Batu Distributif", mission: "Pos 2: Ksatria Gua Batu (Misi Kelompok)", icon: "fa-mountain-city", story: "Pintu Gua Batu terkunci oleh mantra distributif. Pergilah ke Pos 2 fisik di kelas, temukan Kode Kunci Perak, dan buka pintunya bersama kelompokmu!", q: "Hasil perkalian dari (2x + 5)(3x - 4) adalah...", options: ["6x² - 20", "6x² + 7x - 20", "6x² - 8x - 20", "6x² + 23x - 20"], correct: 1 },
+
+            // Pos 3 (Misi Kelompok & Kunci 3)
+            { stage: 3, subIndex: 1, maxSub: 1, location: "Puncak Gunung Merapi", mission: "Pos 3: Ksatria Merapi (Misi Kelompok)", icon: "fa-volcano", story: "Gembok peti pusaka dilindungi mantra kuadrat! Pergilah ke Pos 3 fisik di kelas untuk mendapatkan Kunci Emas Merapi dan faktorkan selisih dua kuadrat ini!", q: "Faktorkan bentuk selisih dua kuadrat berikut: 16x² - 81y²", options: ["(4x - 9y)(4x - 9y)", "(16x + 81y)(x - y)", "(4x + 9y)(4x - 9y)", "(8x + 9y)(8x - 9y)"], correct: 2 },
+
+            // Stage 4: Post-Test (5 Soal)
+            { stage: 4, subIndex: 1, maxSub: 5, location: "Candi Mahkota Pusaka", mission: "Post-Test Soal 1/5", icon: "fa-gem", story: "Uji pemahaman akhir di Candi Mahkota! Selesaikan pengurangan aljabar berikut.", q: "Kurangkan (4a - 7b) dari (9a + 2b - 5)!", options: ["5a + 9b - 5", "5a - 5b - 5", "13a - 5b - 5", "5a + 9b + 5"], correct: 0 },
+            { stage: 4, subIndex: 2, maxSub: 5, location: "Candi Mahkota Pusaka", mission: "Post-Test Soal 2/5", icon: "fa-gem", story: "Bersihkan sumbatan energi dengan pembagian aljabar!", q: "Sederhanakan pembagian aljabar berikut: (24a⁴b³c) / (8a²b)", options: ["3a²b²c", "3a⁶b⁴c", "16a²b²c", "3a²bc"], correct: 0 },
+            { stage: 4, subIndex: 3, maxSub: 5, location: "Candi Mahkota Pusaka", mission: "Post-Test Soal 3/5", icon: "fa-gem", story: "Faktorkan dengan menentukan FPB dari suku-suku berikut!", q: "Faktorkan bentuk aljabar berikut: 12p³q² - 18p²q³", options: ["6p²q²(2p - 3q)", "6pq(2p - 3q)", "12p²q²(p - q)", "6p³q³(2 - 3)"], correct: 0 },
+            { stage: 4, subIndex: 4, maxSub: 5, location: "Candi Mahkota Pusaka", mission: "Post-Test Soal 4/5", icon: "fa-gem", story: "Aplikasi kontekstual aljabar pada luas kebun Kerajaan.", q: "Sebuah kebun berbentuk persegi panjang dengan panjang (2x + 6) meter dan lebar (2x - 6) meter. Luas kebun adalah...", options: ["4x² - 36 meter²", "4x² + 36 meter²", "4x² - 24x - 36 meter²", "2x² - 36 meter²"], correct: 0 },
+            { stage: 4, subIndex: 5, maxSub: 5, location: "Candi Mahkota Pusaka", mission: "Post-Test Soal 5/5", icon: "fa-gem", story: "Tantangan terakhir untuk menyelamatkan Kristal Pusaka Nusantara!", q: "Bentuk sederhana dari 3(2x - 4y) - 2(x - 5y) adalah...", options: ["4x - 2y", "4x - 22y", "8x - 2y", "4x + 2y"], correct: 0 }
+        ];
+
+        let playerName = "";
+        let playerClass = "";
+        let currentIndex = 0;
+        let score = 0;
+        let unlockedStages = [true, false, false, false, false];
+        let completedStages = [false, false, false, false, false];
+        let knightsRecruited = [false, false, false];
+        let posVerified = [true, false, false, false, true]; // Default: Pos 1, 2, 3 butuh verifikasi (false)
+
+        // Daftar Kode Kunci Valid Tiap Pos
+        const validKeys = {
+            1: ["BANASPATI123", "KUNCI1", "POS1"],
+            2: ["GUABATU456", "KUNCI2", "POS2"],
+            3: ["MERAPI789", "KUNCI3", "POS3"]
+        };
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq, duration, type = 'sine') {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        function startGame(e) {
+            e.preventDefault();
+            playerName = document.getElementById('inputName').value;
+            playerClass = document.getElementById('inputClass').value;
+
+            document.getElementById('playerDisplay').innerText = `Ksatria: ${playerName}`;
+            document.getElementById('classDisplay').innerText = `Kelas: ${playerClass}`;
+
+            document.getElementById('screenStart').classList.add('hidden');
+            document.getElementById('gameHeader').classList.remove('hidden');
+            document.getElementById('gameHeader').classList.add('flex');
+            document.getElementById('screenMap').classList.remove('hidden');
+
+            renderMap();
+        }
+
+        function renderMap() {
+            for(let i=0; i<=4; i++) {
+                const node = document.getElementById(`node${i}`);
+                const badge = document.getElementById(`badgeNode${i}`);
+
+                if(completedStages[i]) {
+                    node.className = "map-card p-5 rounded-2xl bg-emerald-950/80 border-2 border-emerald-500 text-emerald-200 cursor-pointer";
+                    badge.className = "px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase";
+                    badge.innerHTML = `<i class="fa-solid fa-check"></i> Selesai`;
+                } else if(unlockedStages[i]) {
+                    node.className = "map-card unlocked p-5 rounded-2xl bg-slate-900 border-2 border-amber-400 cursor-pointer glow-gold";
+                    badge.className = "px-2 py-1 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase";
+                    badge.innerText = "Terbuka";
+                } else {
+                    node.className = "map-card p-5 rounded-2xl bg-slate-900/60 border-2 border-slate-800 opacity-60 cursor-not-allowed";
+                    badge.className = "px-2 py-1 rounded-md bg-slate-800 text-slate-500 text-[10px] font-bold uppercase";
+                    badge.innerHTML = `<i class="fa-solid fa-lock"></i> Terkunci`;
+                }
+            }
+        }
+
+        function selectPos(stageIdx) {
+            if(!unlockedStages[stageIdx]) {
+                alert("Pos ini masih terkunci! Selesaikan Pos sebelumnya terlebih dahulu.");
+                return;
+            }
+
+            const targetIdx = questionsList.findIndex(q => q.stage === stageIdx);
+            if(targetIdx !== -1) {
+                document.getElementById('screenMap').classList.add('hidden');
+                document.getElementById('screenGame').classList.remove('hidden');
+                loadQuestion(targetIdx);
+            }
+        }
+
+        function backToMap() {
+            document.getElementById('screenGame').classList.add('hidden');
+            document.getElementById('screenMap').classList.remove('hidden');
+            renderMap();
+        }
+
+        function loadQuestion(index) {
+            currentIndex = index;
+            const item = questionsList[index];
+
+            document.getElementById('storyLocation').innerText = item.location;
+            document.getElementById('storyMission').innerText = item.mission;
+            document.getElementById('storyText').innerText = `"${item.story}"`;
+            document.getElementById('questionText').innerText = item.q;
+            document.getElementById('locationIcon').innerHTML = `<i class="fa-solid ${item.icon}"></i>`;
+
+            const groupBox = document.getElementById('groupInstructionBox');
+            const msg = document.getElementById('keyStatusMessage');
+            msg.classList.add('hidden');
+
+            if(item.stage >= 1 && item.stage <= 3) {
+                groupBox.classList.remove('hidden');
+                document.getElementById('targetPosNameText').innerText = `Pos ${item.stage} (${item.location})`;
+                document.getElementById('inputKeyPos').value = "";
+            } else {
+                groupBox.classList.add('hidden');
+            }
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            // Jika Pos 1, 2, atau 3 belum terverifikasi kuncinya
+            if(item.stage >= 1 && item.stage <= 3 && !posVerified[item.stage]) {
+                container.innerHTML = `
+                    <div class="col-span-full p-6 text-center rounded-xl bg-slate-800/80 border border-slate-700 text-amber-400 font-semibold text-xs sm:text-sm">
+                        <i class="fa-solid fa-lock text-2xl mb-2 block text-amber-500"></i>
+                        Pilihan jawaban Pos ${item.stage} masih terkunci! Silakan pergilah ke Pos ${item.stage} fisik di kelas untuk mengambil kunci dan lakukan verifikasi kode kunci di atas.
+                    </div>
+                `;
+                return;
+            }
+
+            item.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-4 rounded-xl bg-slate-800/90 border border-slate-700 hover:border-amber-400 text-left text-xs sm:text-sm font-semibold text-slate-200 transition-all hover:bg-slate-800 flex items-center gap-3";
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-amber-400">${String.fromCharCode(65+idx)}</span> ${opt}`;
+                btn.onclick = () => answerQuestion(idx);
+                container.appendChild(btn);
+            });
+        }
+
+        function verifyKeyPos() {
+            const item = questionsList[currentIndex];
+            const stage = item.stage;
+            const val = document.getElementById('inputKeyPos').value.trim().toUpperCase();
+            const msg = document.getElementById('keyStatusMessage');
+            msg.classList.remove('hidden');
+
+            if(validKeys[stage] && validKeys[stage].includes(val)) {
+                posVerified[stage] = true;
+                msg.className = "mt-2 font-bold text-xs text-emerald-400";
+                msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> KUNCI POS ${stage} TERVERIFIKASI! Pilihan jawaban terbuka.`;
+                playSound(800, 0.3);
+                loadQuestion(currentIndex);
+            } else {
+                msg.className = "mt-2 font-bold text-xs text-red-400";
+                msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Kode kunci salah! Pastikan kelompokmu telah menemukan kunci di Pos ${stage} fisik.`;
+                playSound(200, 0.3, 'sawtooth');
+            }
+        }
+
+        function answerQuestion(selectedIdx) {
+            const item = questionsList[currentIndex];
+            if(selectedIdx === item.correct) {
+                playSound(600, 0.2);
+                score += 9;
+
+                if(item.stage >= 1 && item.stage <= 3) {
+                    knightsRecruited[item.stage - 1] = true;
+                    document.getElementById(`badgeK${item.stage}`).className = "w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400 text-xs glow-gold";
+                }
+
+                const nextInStage = questionsList[currentIndex + 1];
+                if(nextInStage && nextInStage.stage === item.stage) {
+                    loadQuestion(currentIndex + 1);
+                } else {
+                    completedStages[item.stage] = true;
+                    if(item.stage < 4) {
+                        unlockedStages[item.stage + 1] = true;
+                        alert(`Selamat! ${item.location} berhasil ditaklukkan. Pos berikutnya terbuka di Peta!`);
+                        backToMap();
+                    } else {
+                        finishGame();
+                    }
+                }
+            } else {
+                playSound(200, 0.3, 'sawtooth');
+                alert("Jawaban kurang tepat! Coba analisis kembali bentuk aljabarnya bersama kelompokmu.");
+            }
+        }
+
+        function finishGame() {
+            document.getElementById('screenGame').classList.add('hidden');
+            document.getElementById('screenMap').classList.add('hidden');
+            document.getElementById('screenResult').classList.remove('hidden');
+
+            const totalKnights = knightsRecruited.filter(Boolean).length;
+            document.getElementById('resName').innerText = `${playerName} (${playerClass})`;
+            document.getElementById('resScore').innerText = Math.min(100, score + 1);
+            document.getElementById('resKnights').innerText = `${totalKnights} / 3 Ksatria`;
+
+            playSound(800, 0.5);
+        }
+
+        function copyWA() {
+            const totalKnights = knightsRecruited.filter(Boolean).length;
+            const text = `*REKAP GAME ALJABAR NUSANTARA*\nNama Kelompok: ${playerName}\nKelas: ${playerClass}\nSkor Akhir: ${document.getElementById('resScore').innerText}\nKsatria Direkrut: ${totalKnights}/3\n\nStatus: Misi Selesai!`;
+            navigator.clipboard.writeText(text);
+            alert("Hasil rekap berhasil disalin ke clipboard!");
+        }
+    </script>
+</body>
+</html>
